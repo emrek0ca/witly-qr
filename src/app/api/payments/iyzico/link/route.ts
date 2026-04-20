@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createPaymentLink } from "@/server/iyzico/link";
 import { getRequestUserId } from "@/server/auth";
-import { getFrontendAppUrl } from "@/server/app-url";
+import { getFrontendAppUrlFromRequest } from "@/server/app-url";
 import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 const schema = z.object({
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(json);
   if (!parsed.success) return Response.json({ error: "invalid_body" }, { status: 400 });
 
-  const appUrl = getFrontendAppUrl();
+  const appUrl = getFrontendAppUrlFromRequest(req);
   const callbackUrl = new URL("/app/settings", appUrl).toString();
 
   try {
