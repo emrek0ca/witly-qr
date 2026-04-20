@@ -1,8 +1,13 @@
 import { sql } from "drizzle-orm";
 import { env } from "@/env";
 import { getDb } from "@/db";
+import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (isFrontendRuntime()) {
+    return proxyRequestToBackend(req);
+  }
+
   let database: "up" | "down" | "skipped" = "skipped";
 
   if (env.DATABASE_URL) {

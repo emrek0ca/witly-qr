@@ -2,8 +2,13 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { env } from "@/env";
 import { getRequestUserId } from "@/server/auth";
+import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (isFrontendRuntime()) {
+    return proxyRequestToBackend(req);
+  }
+
   const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 

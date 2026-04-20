@@ -1,64 +1,38 @@
-export default function Page() {
-  const sessions = [
-    { table: "A1", guest: "4 guests", status: "Claiming 3/6", payment: "Pending payment", total: "1,480 TRY" },
-    { table: "B1", guest: "2 guests", status: "Balanced 2/2", payment: "Ready to pay", total: "620 TRY" },
-  ];
+import { Icon, type IconName } from "@/components/icon";
 
+function Chip({ icon, label }: { icon: IconName; label: string }) {
   return (
-    <main className="flex flex-col gap-6">
-      <div>
-        <div className="text-xs uppercase tracking-[0.2em] text-black/45">
-          Live Sessions
-        </div>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-          Real-time table operation
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-black/60">
-          Monitor table session progress, item claims, and payment readiness
-          without leaking split logic into the client.
-        </p>
+    <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black">
+      <Icon name={icon} className="size-4" />
+      {label}
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <main className="flex flex-col gap-4">
+      <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-black/42">
+        <Icon name="users" className="size-3.5" />
+        Live
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="surface-panel rounded-[1.75rem] p-5">
-          <div className="text-sm font-medium">Operational metrics</div>
-          <div className="mt-4 grid gap-3">
-            {[
-              ["Open sessions", "2 active"],
-              ["Claimed items", "5 / 8"],
-              ["Payments", "1 ready, 1 pending"],
-            ].map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3">
-                <div className="text-sm text-black/60">{label}</div>
-                <div className="text-sm font-medium">{value}</div>
-              </div>
-            ))}
+      <div className="grid gap-3 md:grid-cols-3">
+        <Chip icon="table" label="0 sessions" />
+        <Chip icon="users" label="0 guests" />
+        <Chip icon="chart" label="0 pay" />
+      </div>
+
+      <div className="surface-panel rounded-[1.75rem] p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="inline-flex items-center gap-2 text-sm font-medium">
+            <Icon name="users" className="size-4" />
+            Empty
           </div>
-        </div>
-
-        <div className="grid gap-3">
-          {sessions.map((session) => (
-            <div key={session.table} className="surface-panel rounded-[1.75rem] p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-sm font-medium">Table {session.table}</div>
-                  <div className="mt-2 text-sm leading-6 text-black/60">{session.guest}</div>
-                </div>
-                <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-black/60">
-                  {session.total}
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-2 text-sm text-black/62 sm:grid-cols-2">
-                <div className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3">
-                  {session.status}
-                </div>
-                <div className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3">
-                  {session.payment}
-                </div>
-              </div>
-            </div>
-          ))}
+          <button className="inline-flex h-11 items-center gap-2 rounded-full bg-black px-4 text-sm font-medium text-white">
+            <Icon name="spark" className="size-4" />
+            Open
+          </button>
         </div>
       </div>
     </main>

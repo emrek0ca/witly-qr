@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { captureMarketingLead } from "@/server/leads/service";
+import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 const bodySchema = z.object({
   email: z.string().email(),
@@ -14,6 +15,10 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
+  if (isFrontendRuntime()) {
+    return proxyRequestToBackend(req);
+  }
+
   const json = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(json);
 

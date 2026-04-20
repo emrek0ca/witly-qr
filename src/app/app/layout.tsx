@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { isClerkConfigured } from "@/server/auth";
+import { Icon, type IconName } from "@/components/icon";
 
-const nav = [
-  { href: "/app", label: "Overview" },
-  { href: "/app/launch-setup", label: "Launch Setup" },
-  { href: "/app/tables", label: "Tables & QR" },
-  { href: "/app/menu", label: "Menu" },
-  { href: "/app/live", label: "Live Sessions" },
-  { href: "/app/settings", label: "Settings" },
+const nav: Array<{ href: string; label: string; icon: IconName }> = [
+  { href: "/app", label: "Overview", icon: "chart" },
+  { href: "/app/launch-setup", label: "Setup", icon: "plus" },
+  { href: "/app/tables", label: "Tables", icon: "table" },
+  { href: "/app/menu", label: "Menu", icon: "menu" },
+  { href: "/app/live", label: "Live", icon: "users" },
+  { href: "/app/settings", label: "Settings", icon: "settings" },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -18,7 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-20 border-b border-black/8 bg-white/55 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <div className="flex items-center gap-8">
-            <Link href="/app" className="text-sm font-semibold tracking-[0.22em] uppercase">
+            <Link href="/app" className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.22em] uppercase">
+              <Icon name="qr" className="size-4" />
               Witly
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
@@ -26,9 +28,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full px-3.5 py-1.5 text-sm text-black/60 transition hover:bg-black/[0.04] hover:text-black"
+                  aria-label={item.label}
+                  title={item.label}
+                  className="inline-flex items-center justify-center rounded-full px-3.5 py-2 text-sm text-black/60 transition hover:bg-black/[0.04] hover:text-black"
                 >
-                  {item.label}
+                  <Icon name={item.icon as IconName} className="size-4" />
                 </Link>
               ))}
             </nav>
@@ -38,8 +42,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {clerkEnabled ? (
               <ClerkUserMenu />
             ) : (
-              <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/60">
-                Local mode
+              <div className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 bg-black/[0.03] text-black/55">
+                <Icon name="shield" className="size-4" />
               </div>
             )}
           </div>
@@ -53,9 +57,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-full border border-black/10 bg-white/70 px-3 py-1.5 text-xs font-medium text-black/62 shadow-sm"
+                aria-label={item.label}
+                title={item.label}
+                className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/70 px-3 py-2 text-xs font-medium text-black/62 shadow-sm"
               >
-                {item.label}
+                <Icon name={item.icon as IconName} className="size-3.5" />
               </Link>
             ))}
           </div>
@@ -74,9 +80,11 @@ async function ClerkUserMenu() {
     <>
       <Link
         href="/sign-out"
-        className="hidden rounded-full border border-black/12 bg-white/70 px-3.5 py-1.5 text-sm text-black/60 transition hover:bg-white md:inline-flex"
+        aria-label="Sign out"
+        title="Sign out"
+        className="hidden size-9 items-center justify-center rounded-full border border-black/12 bg-white/70 text-black/60 transition hover:bg-white md:inline-flex"
       >
-        Sign out
+        <Icon name="arrow-right" className="size-4 rotate-180" />
       </Link>
       <UserButton appearance={{ variables: { colorPrimary: "#111111" } }} />
     </>

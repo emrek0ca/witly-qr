@@ -9,6 +9,9 @@ npm i
 npm run dev
 ```
 
+Local development uses the frontend shell and talks to the VPS backend through
+`BACKEND_API_URL` in `.env.local`.
+
 ## Docker
 
 Production-like VPS setup:
@@ -23,6 +26,9 @@ The compose file starts:
 - `db`: Postgres 16 with persistent volume
 - `migrate`: one-shot migration runner
 - `web`: standalone Next.js server
+
+For VPS use, set `APP_RUNTIME=backend` and keep `DATABASE_URL` pointed at the
+dockerized Postgres service.
 
 ## Scripts
 

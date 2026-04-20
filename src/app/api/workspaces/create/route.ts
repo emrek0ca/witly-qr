@@ -1,12 +1,17 @@
 import { z } from "zod";
 import { createWorkspaceForUser } from "@/server/workspaces/service";
 import { getRequestUserId } from "@/server/auth";
+import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 const schema = z.object({
   name: z.string().min(2),
 });
 
 export async function POST(req: Request) {
+  if (isFrontendRuntime()) {
+    return proxyRequestToBackend(req);
+  }
+
   const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createPaymentLink } from "@/server/iyzico/link";
 import { env } from "@/env";
 import { getRequestUserId } from "@/server/auth";
+import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -10,6 +11,10 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
+  if (isFrontendRuntime()) {
+    return proxyRequestToBackend(req);
+  }
+
   const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 

@@ -2,16 +2,31 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Icon, type IconName } from "@/components/icon";
 
-function Card({ title, desc, href }: { title: string; desc: string; href: string }) {
+function Action({
+  href,
+  icon,
+  label,
+  tone = "dark",
+}: {
+  href: string;
+  icon: IconName;
+  label: string;
+  tone?: "dark" | "light";
+}) {
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-black/10 bg-white p-5 hover:border-black/20"
+      className={[
+        "inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition",
+        tone === "dark"
+          ? "bg-black text-white hover:bg-black/88"
+          : "border border-black/12 bg-white/80 text-black hover:bg-white",
+      ].join(" ")}
     >
-      <div className="text-sm font-medium">{title}</div>
-      <div className="mt-1 text-sm text-black/60">{desc}</div>
-      <div className="mt-4 text-xs text-black/50 group-hover:text-black/70">Aç →</div>
+      <Icon name={icon} className="size-4" />
+      {label}
     </Link>
   );
 }
@@ -35,31 +50,6 @@ type GrowthSnapshot = {
     leads: number;
   };
 };
-
-const quickLinks = [
-  {
-    title: "Launch Setup",
-    desc: "Branch, tables, and menu foundation.",
-    href: "/app/launch-setup",
-  },
-  {
-    title: "Tables & QR",
-    desc: "QR mapping, branch coverage, and live states.",
-    href: "/app/tables",
-  },
-  {
-    title: "Live Sessions",
-    desc: "Claims, split views, and payment state.",
-    href: "/app/live",
-  },
-];
-
-const checkpoints = [
-  ["Workspace", "Tenant root and staff roles"],
-  ["Branches", "Location-level operations"],
-  ["Menu", "Snapshot pricing and modifiers"],
-  ["Payments", "Secure iyzico link flow"],
-];
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -104,171 +94,116 @@ export default function Page() {
     setGrowth(null);
   }
 
+  const tiles = [
+    { icon: "grid" as IconName, value: growth?.publicSignals.branches ?? 0, label: "BR" },
+    { icon: "table" as IconName, value: growth?.publicSignals.tables ?? 0, label: "TB" },
+    { icon: "menu" as IconName, value: growth?.publicSignals.menus ?? 0, label: "MN" },
+    { icon: "qr" as IconName, value: growth?.publicSignals.qrCodes ?? 0, label: "QR" },
+  ];
+
   return (
-    <main className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <div className="text-xs uppercase tracking-[0.2em] text-black/45">Overview</div>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Operations control room
-        </h1>
-        <p className="max-w-2xl text-sm leading-6 text-black/60 sm:text-base">
-          Central place for launch readiness, workspace status, and the live
-          path from table scan to split payment.
-        </p>
-      </div>
-
-      <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="text-sm font-medium">Workspace</div>
-              <div className="mt-1 text-sm leading-6 text-black/60">
-                {loading
-                  ? "Loading workspace..."
-                  : workspace
-                    ? `${workspace.name} · ${workspace.role}`
-                    : "No workspace connected yet."}
-              </div>
-            </div>
-            <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-black/60">
-              Tenant aware
-            </div>
+    <main className="flex flex-col gap-6">
+      <section className="surface-panel rounded-[2rem] p-5 sm:p-6 lg:p-7">
+        <div className="flex items-center justify-between gap-3">
+          <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-black/42">
+            <Icon name="spark" className="size-3.5" />
+            Overview
           </div>
-
-          {!loading && !workspace ? (
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Workspace name"
-                className="h-11 flex-1 rounded-full border border-black/12 bg-white px-4 text-sm outline-none transition placeholder:text-black/32 focus:border-black/30"
-              />
-              <button
-                type="button"
-                disabled={!canCreate}
-                onClick={onCreate}
-                className="inline-flex h-11 items-center justify-center rounded-full bg-black px-5 text-sm font-medium text-white transition hover:bg-black/88 disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                {creating ? "Creating..." : "Create workspace"}
-              </button>
-            </div>
-          ) : (
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {checkpoints.map(([title, desc]) => (
-                <div key={title} className="glass-panel rounded-2xl p-4">
-                  <div className="text-sm font-medium">{title}</div>
-                  <div className="mt-2 text-sm leading-6 text-black/60">{desc}</div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-black/60">
+            {loading ? "..." : workspace ? workspace.role : "guest"}
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {[
-            {
-              label: "Launch readiness",
-              value: "4 domains",
-              hint: "Branch, tables, menu, payments",
-            },
-            {
-              label: "Payment safety",
-              value: "Server-owned",
-              hint: "iyzico secrets never reach the client",
-            },
-            {
-              label: "Guest flow",
-              value: "QR → session",
-              hint: "Open table context on scan",
-            },
-            {
-              label: "Split billing",
-              value: "Claims",
-              hint: "Item-level ownership and reconciliation",
-            },
-          ].map((item) => (
-            <div key={item.label} className="glass-panel rounded-[1.5rem] p-5">
-              <div className="text-xs uppercase tracking-[0.18em] text-black/42">
-                {item.label}
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <label className="flex h-11 flex-1 items-center gap-2 rounded-full border border-black/12 bg-white px-4">
+            <Icon name="plus" className="size-4 text-black/35" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={workspace ? workspace.name : "Workspace"}
+              className="w-full bg-transparent text-sm outline-none placeholder:text-black/28"
+            />
+          </label>
+          <button
+            type="button"
+            disabled={!canCreate}
+            onClick={onCreate}
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-black px-4 text-sm font-medium text-white transition hover:bg-black/88 disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            <Icon name="arrow-right" className="size-4" />
+            {creating ? "..." : "Create"}
+          </button>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {tiles.map((tile) => (
+            <div key={tile.label} className="rounded-[1.5rem] border border-black/8 bg-black/[0.02] p-4">
+              <div className="flex items-center justify-between">
+                <div className="inline-flex size-8 items-center justify-center rounded-2xl bg-white text-black">
+                  <Icon name={tile.icon} className="size-4" />
+                </div>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-black/40">
+                  {tile.label}
+                </div>
               </div>
-              <div className="mt-3 text-2xl font-semibold tracking-tight">{item.value}</div>
-              <div className="mt-2 text-sm leading-6 text-black/60">{item.hint}</div>
+              <div className="mt-4 text-3xl font-semibold tracking-tight">{tile.value}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
-          <div className="text-sm font-medium">Growth engine</div>
-          <div className="mt-4 flex items-end justify-between gap-4">
-            <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-black/42">Score</div>
-              <div className="mt-2 text-4xl font-semibold tracking-tight">
-                {growth?.score ?? 15}
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-black/42">
+              <Icon name="chart" className="size-3.5" />
+              Growth
             </div>
             <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-black/60">
               {growth?.label ?? "needs activation"}
             </div>
           </div>
-          <div className="mt-4 grid gap-2 text-sm text-black/62">
-            {[
-              `Branches: ${growth?.publicSignals.branches ?? 0}`,
-              `Tables: ${growth?.publicSignals.tables ?? 0}`,
-              `Menu items: ${growth?.publicSignals.menus ?? 0}`,
-              `QR codes: ${growth?.publicSignals.qrCodes ?? 0}`,
-              `Leads captured: ${growth?.publicSignals.leads ?? 0}`,
-            ].map((item) => (
-              <div key={item} className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3">
-                {item}
-              </div>
-            ))}
+          <div className="mt-5 flex items-end gap-4">
+            <div className="text-5xl font-semibold tracking-tight">{growth?.score ?? 15}</div>
+            <div className="pb-1 text-xs uppercase tracking-[0.18em] text-black/42">score</div>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Action href="/app/launch-setup" icon="spark" label="Setup" tone="light" />
+            <Action href="/app/tables" icon="table" label="Tables" tone="light" />
+            <Action href="/app/live" icon="users" label="Live" tone="light" />
           </div>
         </div>
 
         <div className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
-          <div className="text-sm font-medium">Next best actions</div>
-          <div className="mt-4 grid gap-3">
-            {(growth?.nextActions ?? [
-              "Create the first workspace and branch.",
-              "Capture one lead from the pricing page.",
-              "Share the public QR experience with guests.",
-            ]).map((item) => (
-              <div
-                key={item}
-                className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/62"
-              >
-                {item}
+          <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-black/42">
+            <Icon name="link" className="size-3.5" />
+            Next
+          </div>
+          <div className="mt-5 grid gap-2">
+            {growth?.nextActions?.length ? (
+              growth.nextActions.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-full border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/62"
+                >
+                  <Icon name="arrow-right" className="size-4 text-black/35" />
+                  <span className="truncate">{item}</span>
+                </div>
+              ))
+            ) : (
+              <div className="flex items-center gap-3 rounded-full border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/42">
+                <Icon name="spark" className="size-4 text-black/35" />
+                <span className="truncate">—</span>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        {quickLinks.map((item) => (
-          <Card key={item.href} title={item.title} desc={item.desc} href={item.href} />
-        ))}
-      </section>
-
-      <section className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
-        <div className="text-sm font-medium">What ships next</div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {[
-            "Workspace-scoped branch and table models",
-            "QR resolution and session join flow",
-            "Claim lifecycle with item snapshots",
-            "iyzico payment link creation and reconciliation",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/64"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
+      <section className="grid gap-3 md:grid-cols-3">
+        <Action href="/app/launch-setup" icon="plus" label="Launch" tone="light" />
+        <Action href="/app/menu" icon="menu" label="Menu" tone="light" />
+        <Action href="/app/settings" icon="settings" label="Settings" tone="light" />
       </section>
     </main>
   );
