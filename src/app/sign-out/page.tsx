@@ -1,8 +1,7 @@
-import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { isClerkConfigured } from "@/server/auth";
 
-export default function Page() {
+export default async function Page() {
   if (!isClerkConfigured()) {
     return (
       <main className="mx-auto max-w-md px-6 py-16">
@@ -23,6 +22,8 @@ export default function Page() {
       </main>
     );
   }
+
+  const { SignOutButton } = await import("@clerk/nextjs");
 
   return (
     <main className="mx-auto max-w-md px-6 py-16">

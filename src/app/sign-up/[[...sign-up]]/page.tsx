@@ -1,7 +1,6 @@
-import { SignUp } from "@clerk/nextjs";
 import { isClerkConfigured } from "@/server/auth";
 
-export default function Page() {
+export default async function Page() {
   if (!isClerkConfigured()) {
     return (
       <main className="mx-auto max-w-md px-6 py-16">
@@ -15,6 +14,8 @@ export default function Page() {
       </main>
     );
   }
+
+  const { SignUp } = await import("@clerk/nextjs");
 
   return (
     <main>

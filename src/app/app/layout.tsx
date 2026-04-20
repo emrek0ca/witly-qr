@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { isClerkConfigured } from "@/server/auth";
 
 const nav = [
@@ -37,15 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             {clerkEnabled ? (
-              <>
-                <Link
-                  href="/sign-out"
-                  className="hidden rounded-full border border-black/12 bg-white/70 px-3.5 py-1.5 text-sm text-black/60 transition hover:bg-white md:inline-flex"
-                >
-                  Sign out
-                </Link>
-                <UserButton appearance={{ variables: { colorPrimary: "#111111" } }} />
-              </>
+              <ClerkUserMenu />
             ) : (
               <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/60">
                 Local mode
@@ -73,5 +64,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="mt-8">{children}</div>
       </div>
     </div>
+  );
+}
+
+async function ClerkUserMenu() {
+  const { UserButton } = await import("@clerk/nextjs");
+
+  return (
+    <>
+      <Link
+        href="/sign-out"
+        className="hidden rounded-full border border-black/12 bg-white/70 px-3.5 py-1.5 text-sm text-black/60 transition hover:bg-white md:inline-flex"
+      >
+        Sign out
+      </Link>
+      <UserButton appearance={{ variables: { colorPrimary: "#111111" } }} />
+    </>
   );
 }
