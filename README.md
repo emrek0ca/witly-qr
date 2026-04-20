@@ -30,7 +30,7 @@ The compose file starts:
 - `npm run build`
 - `npm run lint`
 - `npm run typecheck`
-- `npm run db:migrate:env` for containerized environments
+- `npm run db:migrate:prod` for containerized environments
 - `npm run db:migrate` for local `.env.local` workflows
 
 ## Environment

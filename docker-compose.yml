@@ -20,7 +20,7 @@ services:
     build:
       context: .
       target: builder
-    command: npm run db:migrate:env
+    command: npm run db:migrate:prod
     env_file:
       - path: ./.env.production
         required: false
