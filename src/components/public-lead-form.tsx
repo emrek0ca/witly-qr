@@ -27,6 +27,13 @@ export function PublicLeadForm({
 
     setStatus("saving");
 
+    const params = new URLSearchParams(window.location.search);
+    const referrerCode = params.get("ref") ?? "";
+    const utmSource = params.get("utm_source") ?? "";
+    const utmMedium = params.get("utm_medium") ?? "";
+    const utmCampaign = params.get("utm_campaign") ?? "";
+    const landingPath = `${window.location.pathname}${window.location.search}`;
+
     const res = await fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -35,6 +42,11 @@ export function PublicLeadForm({
         companyName,
         country,
         source,
+        referrerCode: referrerCode || undefined,
+        utmSource: utmSource || undefined,
+        utmMedium: utmMedium || undefined,
+        utmCampaign: utmCampaign || undefined,
+        landingPath: landingPath || undefined,
       }),
     });
 

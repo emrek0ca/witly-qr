@@ -6,6 +6,11 @@ const bodySchema = z.object({
   companyName: z.string().trim().min(2).max(120).optional(),
   country: z.string().trim().min(2).max(80).optional(),
   source: z.string().trim().min(2).max(80),
+  referrerCode: z.string().trim().min(2).max(80).optional(),
+  utmSource: z.string().trim().min(2).max(80).optional(),
+  utmMedium: z.string().trim().min(2).max(80).optional(),
+  utmCampaign: z.string().trim().min(2).max(120).optional(),
+  landingPath: z.string().trim().min(1).max(200).optional(),
 });
 
 export async function POST(req: Request) {

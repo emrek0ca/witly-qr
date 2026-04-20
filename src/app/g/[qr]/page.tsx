@@ -101,6 +101,30 @@ export default async function Page({ params }: { params: Promise<{ qr: string }>
               </Link>
             </div>
           </div>
+
+          <div className="rounded-[1.5rem] border border-black/8 bg-black/[0.02] px-4 py-4">
+            <div className="text-xs uppercase tracking-[0.18em] text-black/42">
+              Powered by Witly QR
+            </div>
+            <div className="mt-2 text-sm leading-6 text-black/60">
+              This table flow was built for fast mobile ordering, live sessions,
+              and split payments. If you run a venue, launch your own setup.
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                href="/pricing?utm_source=guest-menu&utm_medium=organic&utm_campaign=powered_by"
+                className="inline-flex h-10 items-center justify-center rounded-full bg-black px-4 text-xs font-medium text-white transition hover:bg-black/88"
+              >
+                Launch your venue
+              </Link>
+              <Link
+                href="/sign-up?utm_source=guest-menu&utm_medium=organic&utm_campaign=powered_by"
+                className="inline-flex h-10 items-center justify-center rounded-full border border-black/12 bg-white px-4 text-xs font-medium text-black transition hover:bg-white"
+              >
+                Start free
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </main>

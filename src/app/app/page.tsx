@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 function Card({ title, desc, href }: { title: string; desc: string; href: string }) {
   return (
@@ -11,9 +11,7 @@ function Card({ title, desc, href }: { title: string; desc: string; href: string
     >
       <div className="text-sm font-medium">{title}</div>
       <div className="mt-1 text-sm text-black/60">{desc}</div>
-      <div className="mt-4 text-xs text-black/50 group-hover:text-black/70">
-        Aç →
-      </div>
+      <div className="mt-4 text-xs text-black/50 group-hover:text-black/70">Aç →</div>
     </Link>
   );
 }
@@ -23,6 +21,19 @@ type MeWorkspace = {
   name: string;
   slug: string;
   role: string;
+};
+
+type GrowthSnapshot = {
+  score: number;
+  label: string;
+  nextActions: string[];
+  publicSignals: {
+    branches: number;
+    tables: number;
+    menus: number;
+    qrCodes: number;
+    leads: number;
+  };
 };
 
 const quickLinks = [
@@ -53,6 +64,7 @@ const checkpoints = [
 export default function Page() {
   const [loading, setLoading] = useState(true);
   const [workspace, setWorkspace] = useState<MeWorkspace | null>(null);
+  const [growth, setGrowth] = useState<GrowthSnapshot | null>(null);
   const [name, setName] = useState("");
   const [creating, setCreating] = useState(false);
   const canCreate = useMemo(() => name.trim().length >= 2 && !creating, [name, creating]);
@@ -63,8 +75,12 @@ export default function Page() {
       const res = await fetch("/api/workspaces/me", { cache: "no-store" });
       if (!mounted) return;
       if (res.ok) {
-        const json = (await res.json()) as { workspace: MeWorkspace | null };
+        const json = (await res.json()) as {
+          workspace: MeWorkspace | null;
+          growth: GrowthSnapshot;
+        };
         setWorkspace(json.workspace);
+        setGrowth(json.growth);
       }
       setLoading(false);
     })();
@@ -85,6 +101,7 @@ export default function Page() {
     if (!res.ok) return;
     const json = (await res.json()) as { workspace: MeWorkspace };
     setWorkspace(json.workspace);
+    setGrowth(null);
   }
 
   return (
@@ -174,12 +191,58 @@ export default function Page() {
               <div className="text-xs uppercase tracking-[0.18em] text-black/42">
                 {item.label}
               </div>
-              <div className="mt-3 text-2xl font-semibold tracking-tight">
-                {item.value}
-              </div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight">{item.value}</div>
               <div className="mt-2 text-sm leading-6 text-black/60">{item.hint}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
+          <div className="text-sm font-medium">Growth engine</div>
+          <div className="mt-4 flex items-end justify-between gap-4">
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-black/42">Score</div>
+              <div className="mt-2 text-4xl font-semibold tracking-tight">
+                {growth?.score ?? 15}
+              </div>
+            </div>
+            <div className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-black/60">
+              {growth?.label ?? "needs activation"}
+            </div>
+          </div>
+          <div className="mt-4 grid gap-2 text-sm text-black/62">
+            {[
+              `Branches: ${growth?.publicSignals.branches ?? 0}`,
+              `Tables: ${growth?.publicSignals.tables ?? 0}`,
+              `Menu items: ${growth?.publicSignals.menus ?? 0}`,
+              `QR codes: ${growth?.publicSignals.qrCodes ?? 0}`,
+              `Leads captured: ${growth?.publicSignals.leads ?? 0}`,
+            ].map((item) => (
+              <div key={item} className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="surface-panel rounded-[1.75rem] p-5 sm:p-6">
+          <div className="text-sm font-medium">Next best actions</div>
+          <div className="mt-4 grid gap-3">
+            {(growth?.nextActions ?? [
+              "Create the first workspace and branch.",
+              "Capture one lead from the pricing page.",
+              "Share the public QR experience with guests.",
+            ]).map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/62"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -198,7 +261,10 @@ export default function Page() {
             "Claim lifecycle with item snapshots",
             "iyzico payment link creation and reconciliation",
           ].map((item) => (
-            <div key={item} className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/64">
+            <div
+              key={item}
+              className="rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/64"
+            >
               {item}
             </div>
           ))}
