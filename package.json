@@ -10,6 +10,9 @@
     "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "db:generate:env": "drizzle-kit generate",
+    "db:migrate:env": "drizzle-kit migrate",
+    "db:studio:env": "drizzle-kit studio",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-witly_qr}
+      POSTGRES_USER: ${POSTGRES_USER:-witly}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-witly_change_me}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - witly
+
+  migrate:
+    build:
+      context: .
+      target: builder
+    command: npm run db:migrate:env
+    env_file:
+      - path: ./.env.production
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - witly
+
+  web:
+    build:
+      context: .
+      target: runner
+    env_file:
+      - path: ./.env.production
+        required: false
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks:
+      - witly
+
+volumes:
+  db_data:
+
+networks:
+  witly:

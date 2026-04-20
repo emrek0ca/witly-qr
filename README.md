@@ -9,16 +9,34 @@ npm i
 npm run dev
 ```
 
+## Docker
+
+Production-like VPS setup:
+
+```bash
+cp .env.production.example .env.production
+docker compose up -d --build
+```
+
+The compose file starts:
+
+- `db`: Postgres 16 with persistent volume
+- `migrate`: one-shot migration runner
+- `web`: standalone Next.js server
+
 ## Scripts
 
 - `npm run dev`
 - `npm run build`
 - `npm run lint`
 - `npm run typecheck`
+- `npm run db:migrate:env` for containerized environments
+- `npm run db:migrate` for local `.env.local` workflows
 
 ## Environment
 
-`.env.local.example` dosyasını referans al.
+`.env.local.example` local development içindir.
+`.env.production.example` VPS/Docker içindir.
 
 ## Docs
 

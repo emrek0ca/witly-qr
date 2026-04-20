@@ -55,14 +55,14 @@ export default function Page() {
         <div className="surface-panel rounded-[1.75rem] p-5">
           <div className="text-sm font-medium">Environment status</div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Pill ok={Boolean(status?.clerk)} label="Clerk" />
-            <Pill ok={Boolean(status?.database)} label="Database" />
-            <Pill ok={Boolean(status?.iyzico)} label="iyzico" />
-          </div>
-          <div className="mt-5 rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/60">
-            App URL: <span className="font-mono">{status?.appUrl ?? "—"}</span>
-          </div>
+          <Pill ok={Boolean(status?.clerk)} label="Clerk" />
+          <Pill ok={Boolean(status?.database)} label="Database" />
+          <Pill ok={Boolean(status?.iyzico)} label="iyzico" />
         </div>
+        <div className="mt-5 rounded-2xl border border-black/8 bg-black/[0.02] px-4 py-3 text-sm text-black/60">
+            App URL: <span className="font-mono">{status?.appUrl ?? "—"}</span>
+        </div>
+      </div>
 
         <div className="surface-panel rounded-[1.75rem] p-5">
           <div className="text-sm font-medium">Payment hardening</div>

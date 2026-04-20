@@ -11,7 +11,14 @@ export function getDb() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL_missing");
 
-  const dbClient = client ?? (client = postgres(databaseUrl, { prepare: false }));
+  const dbClient =
+    client ??
+    (client = postgres(databaseUrl, {
+      prepare: false,
+      max: 5,
+      idle_timeout: 20,
+      connect_timeout: 10,
+    }));
   database = drizzle(dbClient, { schema });
 
   return database;

@@ -1,13 +1,25 @@
 import { auth } from "@clerk/nextjs/server";
+import { sql } from "drizzle-orm";
+import { getDb } from "@/db";
 import { env } from "@/env";
 
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 
+  let databaseConnected = false;
+  if (env.DATABASE_URL) {
+    try {
+      await getDb().execute(sql`select 1`);
+      databaseConnected = true;
+    } catch {
+      databaseConnected = false;
+    }
+  }
+
   const status = {
     clerk: Boolean(env.CLERK_SECRET_KEY && env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY),
-    database: Boolean(env.DATABASE_URL),
+    database: databaseConnected,
     iyzico: Boolean(env.IYZICO_API_KEY && env.IYZICO_SECRET_KEY && env.IYZICO_BASE_URL),
     appUrl: env.NEXT_PUBLIC_APP_URL ?? null,
   };
