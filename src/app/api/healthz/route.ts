@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { env } from "@/env";
 import { getDb } from "@/db";
+import { getFrontendAppUrl } from "@/server/app-url";
 import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 export async function GET(req: Request) {
@@ -23,7 +24,7 @@ export async function GET(req: Request) {
     ok: database !== "down",
     database,
     runtime: "ok",
-    appUrl: env.NEXT_PUBLIC_APP_URL ?? null,
+    appUrl: getFrontendAppUrl(),
   };
 
   return Response.json(status, { status: status.ok ? 200 : 503 });

@@ -9,8 +9,8 @@ npm i
 npm run dev
 ```
 
-Local development uses the frontend shell and talks to the VPS backend through
-`BACKEND_API_URL` in `.env.local`.
+Local development uses the frontend shell on `http://localhost:3000` and talks
+to the VPS backend through `BACKEND_API_URL` in `.env.local`.
 
 ## Docker
 
@@ -28,7 +28,8 @@ The compose file starts:
 - `web`: standalone Next.js server
 
 For VPS use, set `APP_RUNTIME=backend` and keep `DATABASE_URL` pointed at the
-dockerized Postgres service.
+dockerized Postgres service. The frontend can stay local by keeping
+`FRONTEND_APP_URL=http://localhost:3000` in `.env.local`.
 
 ## Scripts
 
@@ -41,8 +42,8 @@ dockerized Postgres service.
 
 ## Environment
 
-`.env.local.example` local development içindir.
-`.env.production.example` VPS/Docker içindir.
+`.env.local.example` local frontend + VPS backend içindir.
+`.env.production.example` VPS/Docker backend içindir.
 
 ## Docs
 

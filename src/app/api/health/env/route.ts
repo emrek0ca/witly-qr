@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { env } from "@/env";
 import { getRequestUserId } from "@/server/auth";
+import { getFrontendAppUrl } from "@/server/app-url";
 import { isFrontendRuntime, proxyRequestToBackend } from "@/server/runtime";
 
 export async function GET(req: Request) {
@@ -26,7 +27,7 @@ export async function GET(req: Request) {
     clerk: Boolean(env.CLERK_SECRET_KEY && env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY),
     database: databaseConnected,
     iyzico: Boolean(env.IYZICO_API_KEY && env.IYZICO_SECRET_KEY && env.IYZICO_BASE_URL),
-    appUrl: env.NEXT_PUBLIC_APP_URL ?? null,
+    appUrl: getFrontendAppUrl(),
   };
 
   return Response.json({ status });

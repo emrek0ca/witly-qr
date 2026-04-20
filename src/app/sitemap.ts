@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { env } from "@/env";
+import { getFrontendAppUrl } from "@/server/app-url";
 
-const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const baseUrl = getFrontendAppUrl();
 
 const routes = ["", "/pricing", "/sign-up", "/sign-in", "/app", "/app/launch-setup", "/app/tables", "/app/menu", "/app/live", "/app/settings"];
 

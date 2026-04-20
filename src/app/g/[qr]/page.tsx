@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { env } from "@/env";
 import { Icon } from "@/components/icon";
+import { getFrontendAppUrl } from "@/server/app-url";
 
 type PublicQrPayload = {
   found: boolean;
@@ -42,7 +42,7 @@ function money(cents: number, currency: string) {
 
 export default async function Page({ params }: { params: Promise<{ qr: string }> }) {
   const { qr } = await params;
-  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = getFrontendAppUrl();
   const res = await fetch(new URL(`/api/public/qr/${qr}`, baseUrl), { cache: "no-store" });
   const data = (res.ok ? await res.json() : null) as PublicQrPayload | null;
   const categories = data?.menu?.categories ?? [];

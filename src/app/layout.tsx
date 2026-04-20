@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { env } from "@/env";
 import { isClerkConfigured } from "@/server/auth";
+import { getFrontendAppUrl } from "@/server/app-url";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const siteUrl = getFrontendAppUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
