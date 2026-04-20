@@ -6,16 +6,6 @@ const schema = z.object({
   name: z.string().min(2),
 });
 
-function slugify(input: string) {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 40);
-}
-
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return new Response("Unauthorized", { status: 401 });
@@ -27,7 +17,6 @@ export async function POST(req: Request) {
   const ws = await createWorkspaceForUser({
     clerkUserId: userId,
     name: parsed.data.name,
-    slug: slugify(parsed.data.name),
   });
 
   return Response.json({ workspace: ws });

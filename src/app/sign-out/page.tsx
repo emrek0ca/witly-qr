@@ -19,7 +19,7 @@ export default function Page() {
             href="/app"
             className="inline-flex h-10 items-center justify-center rounded-full border border-black/15 bg-white px-4 text-sm font-medium text-black hover:bg-black/[0.03]"
           >
-            PaneLe dön
+            Panele dön
           </Link>
         </div>
       </div>

@@ -1,11 +1,18 @@
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { env } from "@/env";
+import * as schema from "./schema";
 
-function requireEnv(value: string | undefined, key: string) {
-  if (!value) throw new Error(`${key}_missing`);
-  return value;
+let client: ReturnType<typeof postgres> | null = null;
+let database: PostgresJsDatabase<typeof schema> | null = null;
+
+export function getDb() {
+  if (database) return database;
+
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) throw new Error("DATABASE_URL_missing");
+
+  const dbClient = client ?? (client = postgres(databaseUrl, { prepare: false }));
+  database = drizzle(dbClient, { schema });
+
+  return database;
 }
-
-const client = postgres(requireEnv(env.DATABASE_URL, "DATABASE_URL"), { prepare: false });
-export const db = drizzle(client);

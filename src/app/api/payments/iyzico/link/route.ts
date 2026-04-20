@@ -6,7 +6,7 @@ import { env } from "@/env";
 const schema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
-  price: z.string().min(1),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/),
 });
 
 export async function POST(req: Request) {
@@ -17,16 +17,20 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(json);
   if (!parsed.success) return Response.json({ error: "invalid_body" }, { status: 400 });
 
-  const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const callbackUrl = `${appUrl}/app/settings`;
+  const appUrl = env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
+  const callbackUrl = new URL("/app/settings", appUrl).toString();
 
-  const result = await createPaymentLink({
-    name: parsed.data.name,
-    description: parsed.data.description,
-    price: parsed.data.price,
-    currencyCode: "TRY",
-    callbackUrl,
-  });
+  try {
+    const result = await createPaymentLink({
+      name: parsed.data.name,
+      description: parsed.data.description,
+      price: parsed.data.price,
+      currencyCode: "TRY",
+      callbackUrl,
+    });
 
-  return Response.json(result);
+    return Response.json(result);
+  } catch {
+    return Response.json({ error: "iyzico_link_failed" }, { status: 502 });
+  }
 }
