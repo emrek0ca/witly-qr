@@ -1,17 +1,25 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const optionalString = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  z.string().min(1).optional(),
+);
+
 export const env = createEnv({
   server: {
-    CLERK_SECRET_KEY: z.string().min(1).optional(),
-    DATABASE_URL: z.string().min(1).optional(),
-    IYZICO_API_KEY: z.string().min(1).optional(),
-    IYZICO_SECRET_KEY: z.string().min(1).optional(),
-    IYZICO_BASE_URL: z.string().min(1).optional(),
+    CLERK_SECRET_KEY: optionalString,
+    DATABASE_URL: optionalString,
+    IYZICO_API_KEY: optionalString,
+    IYZICO_SECRET_KEY: optionalString,
+    IYZICO_BASE_URL: optionalString,
   },
   client: {
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
-    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: optionalString,
+    NEXT_PUBLIC_APP_URL: z.preprocess(
+      (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+      z.string().url().optional(),
+    ),
   },
   runtimeEnv: {
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
