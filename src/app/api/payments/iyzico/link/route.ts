@@ -1,7 +1,7 @@
-import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { createPaymentLink } from "@/server/iyzico/link";
 import { env } from "@/env";
+import { getRequestUserId } from "@/server/auth";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -10,7 +10,7 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 
   const json = await req.json().catch(() => null);

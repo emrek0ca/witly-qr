@@ -1,10 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { env } from "@/env";
+import { getRequestUserId } from "@/server/auth";
 
 export async function GET() {
-  const { userId } = await auth();
+  const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 
   let databaseConnected = false;

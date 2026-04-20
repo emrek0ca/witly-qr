@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
 import { getWorkspaceForUser } from "@/server/workspaces/service";
+import { getRequestUserId } from "@/server/auth";
 
 export async function GET() {
-  const { userId } = await auth();
+  const userId = await getRequestUserId();
   if (!userId) return new Response("Unauthorized", { status: 401 });
 
   const ws = await getWorkspaceForUser(userId);

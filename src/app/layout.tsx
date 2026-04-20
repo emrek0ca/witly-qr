@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { isClerkConfigured } from "@/server/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,16 +24,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const clerkEnabled = isClerkConfigured();
+
   return (
-    <ClerkProvider>
-      <html
-        lang="tr"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html
+      lang="tr"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+        {clerkEnabled ? <ClerkProvider>{children}</ClerkProvider> : children}
+      </body>
+    </html>
   );
 }

@@ -1,7 +1,29 @@
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { isClerkConfigured } from "@/server/auth";
 
 export default function Page() {
+  if (!isClerkConfigured()) {
+    return (
+      <main className="mx-auto max-w-md px-6 py-16">
+        <div className="surface-panel rounded-[1.75rem] p-6">
+          <div className="text-sm font-medium">Local mode</div>
+          <div className="mt-1 text-sm text-black/60">
+            No Clerk session is active on this server.
+          </div>
+          <div className="mt-6 flex gap-3">
+            <Link
+              href="/app"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90"
+            >
+              Panele dön
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-md px-6 py-16">
       <div className="rounded-2xl border border-black/10 p-6">
