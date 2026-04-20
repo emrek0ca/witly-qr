@@ -23,6 +23,24 @@ export const workspaces = pgTable(
   (t) => [uniqueIndex("workspaces_slug_uq").on(t.slug)],
 );
 
+export const marketingLeads = pgTable(
+  "marketing_leads",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    companyName: text("company_name"),
+    country: text("country"),
+    source: text("source").notNull(),
+    status: text("status").notNull().default("new"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("marketing_leads_email_uq").on(t.email),
+    index("marketing_leads_source_idx").on(t.source),
+    index("marketing_leads_status_idx").on(t.status),
+  ],
+);
+
 export const members = pgTable(
   "members",
   {

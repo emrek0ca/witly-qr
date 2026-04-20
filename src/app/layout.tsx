@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { env } from "@/env";
 import { isClerkConfigured } from "@/server/auth";
 
 const geistSans = Geist({
@@ -13,9 +14,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Witly QR",
-  description: "Multi-tenant QR menu and table-session SaaS for restaurants.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Witly QR",
+    template: "%s | Witly QR",
+  },
+  description:
+    "Multi-tenant QR menu, live table session, and split payment software for restaurants and cafes.",
+  openGraph: {
+    type: "website",
+    title: "Witly QR",
+    description:
+      "Launch branded QR menus, live table sessions, and server-owned split payments.",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Witly QR",
+    description:
+      "Launch branded QR menus, live table sessions, and server-owned split payments.",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +48,7 @@ export default function RootLayout({
 
   return (
     <html
-      lang="tr"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
