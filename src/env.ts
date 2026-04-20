@@ -13,6 +13,7 @@ export const env = createEnv({
     IYZICO_API_KEY: optionalString,
     IYZICO_SECRET_KEY: optionalString,
     IYZICO_BASE_URL: optionalString,
+    AUTH_MODE: z.enum(["local", "clerk"]).optional(),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: optionalString,
@@ -27,6 +28,7 @@ export const env = createEnv({
     IYZICO_API_KEY: process.env.IYZICO_API_KEY,
     IYZICO_SECRET_KEY: process.env.IYZICO_SECRET_KEY,
     IYZICO_BASE_URL: process.env.IYZICO_BASE_URL,
+    AUTH_MODE: process.env.AUTH_MODE,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
